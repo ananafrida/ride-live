@@ -10,6 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@react-google-maps/api": "^2.19.3",
     "convex": "^1.16.0",
     "node-fetch": "^2.7.0",
     "react": "^18.3.1",
