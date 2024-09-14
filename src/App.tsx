@@ -19,6 +19,7 @@ function App() {
      {locations?.map(({ _id, longitude }) => (
        <div key={_id}>{Number(longitude)}</div>
      ))}
+      <Map/>
    </div>
  );
 }
