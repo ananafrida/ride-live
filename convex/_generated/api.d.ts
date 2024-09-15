@@ -15,8 +15,11 @@ import type {
   FilterApi,
   FunctionReference,
 } from "convex/server";
+import type * as generateCoor from "../generateCoor.js";
+import type * as insertCoor from "../insertCoor.js";
 import type * as locations from "../locations.js";
 import type * as tasks from "../tasks.js";
+import type * as userInputs from "../userInputs.js";
 
 /**
  * A utility for referencing Convex functions in your app's API.
@@ -27,8 +30,11 @@ import type * as tasks from "../tasks.js";
  * ```
  */
 declare const fullApi: ApiFromModules<{
+  generateCoor: typeof generateCoor;
+  insertCoor: typeof insertCoor;
   locations: typeof locations;
   tasks: typeof tasks;
+  userInputs: typeof userInputs;
 }>;
 export declare const api: FilterApi<
   typeof fullApi,

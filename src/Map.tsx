@@ -1,5 +1,7 @@
-import React, { useState, useCallback } from 'react';
+import React from 'react';
 import { GoogleMap, Marker, useLoadScript } from '@react-google-maps/api';
+import { useQuery } from 'convex/react';
+import { api } from '../convex/_generated/api'; 
 
 const containerStyle = {
   width: '100vw',
@@ -7,29 +9,21 @@ const containerStyle = {
 };
 
 const defaultCenter = {
-  lat: 41.544651, 
+  lat: 41.544651,
   lng: -72.651711,
 };
 
-// Define the Google Map component
 const Map: React.FC = () => {
   const { isLoaded, loadError } = useLoadScript({
     googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY || '',
   });
 
-  const [center, setCenter] = useState(defaultCenter);
+  // Fetch locations using Convex query
+  const locations = useQuery(api.locations.getLocations) || [];
 
-  const [markerPosition, setMarkerPosition] = useState(defaultCenter);
-
-  // Function to handle map click and move the marker
-  const onMapClick = useCallback((event: google.maps.MapMouseEvent) => {
-    if (event.latLng) {
-      setMarkerPosition({
-        lat: event.latLng.lat(),
-        lng: event.latLng.lng(),
-      });
-    }
-  }, []);
+  const center = locations.length > 0 
+  ? { lat: locations[0].latitude, lng: locations[0].longitude }
+  : defaultCenter;
 
   if (loadError) return <div>Error loading Google Maps</div>;
   if (!isLoaded) return <div>Loading Maps...</div>;
@@ -39,9 +33,21 @@ const Map: React.FC = () => {
       mapContainerStyle={containerStyle}
       zoom={12}
       center={center}
-      onClick={onMapClick} 
     >
-      <Marker position={markerPosition} />
+      {/* Render multiple markers using data from Convex */}
+      {locations.length === 0 ? (
+        <div>No locations found.</div>
+      ) : (
+        locations.map((location) => {
+          console.log("Rendering marker at: ", location);
+          return (
+            <Marker
+              key={location._id}
+              position={{ lat: location.latitude, lng: location.longitude }}
+            />
+          );
+        })
+      )}
     </GoogleMap>
   );
 };
