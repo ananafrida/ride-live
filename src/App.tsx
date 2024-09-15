@@ -4,6 +4,7 @@ import Map from "./Map";
 import Sidebar from "./Sidebar";
 
 
+
 function App() {
   const tasks = useQuery(api.tasks.get);
   return (
@@ -16,5 +17,5 @@ function App() {
   );
 }
 
-export default App;
 
+export default App;
