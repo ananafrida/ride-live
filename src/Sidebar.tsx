@@ -1,7 +1,8 @@
 import React, { useState } from "react";
-import './Sidebar.css'
+import { useMutation } from "convex/react";
+import { api } from "../convex/_generated/api";
+import './Sidebar.css';
 
-// Sidebar component
 const Sidebar: React.FC = () => {
   // State to store form inputs
   const [formData, setFormData] = useState({
@@ -10,6 +11,12 @@ const Sidebar: React.FC = () => {
     budget: "",
     description: "",
   });
+
+  // State to handle feedback for submission
+  const [feedbackMessage, setFeedbackMessage] = useState<string | null>(null);
+
+  // Create a mutation for inserting user inputs
+  const insertUserInput = useMutation(api.userInputs.insertUserInput);
 
   // Handle form input change
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -21,10 +28,23 @@ const Sidebar: React.FC = () => {
   };
 
   // Handle form submission
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("User input: ", formData);
-    // You can perform additional actions like sending data to a server or API here.
+    try {
+      // Insert the data using the mutation
+      await insertUserInput(formData);
+      // Provide feedback and reset the form
+      setFeedbackMessage("Form submitted successfully!");
+      setFormData({
+        destination: "",
+        tripType: "",
+        budget: "",
+        description: "",
+      });
+    } catch (error) {
+      setFeedbackMessage("Error submitting the form.");
+      console.error("Failed to submit form: ", error);
+    }
   };
 
   return (
@@ -44,7 +64,12 @@ const Sidebar: React.FC = () => {
 
         <div className="form-group">
           <label htmlFor="tripType">Trip Type: </label>
-          <select id="tripType" name="tripType" value={formData.tripType} onChange={handleChange}>
+          <select
+            id="tripType"
+            name="tripType"
+            value={formData.tripType}
+            onChange={handleChange}
+          >
             <option value="">Select trip type</option>
             <option value="adventure">Adventure</option>
             <option value="relaxation">Relaxation</option>
@@ -64,7 +89,7 @@ const Sidebar: React.FC = () => {
         </div>
 
         <div className="form-group">
-          <label htmlFor="description">description: </label>
+          <label htmlFor="description">Description: </label>
           <input
             type="text"
             id="description"
@@ -76,6 +101,9 @@ const Sidebar: React.FC = () => {
 
         <button type="submit">Submit</button>
       </form>
+
+      {/* Feedback message to inform the user about submission */}
+      {feedbackMessage && <p>{feedbackMessage}</p>}
     </div>
   );
 };

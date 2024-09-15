@@ -6,4 +6,10 @@ export default defineSchema({
     text: v.string(),
     isCompleted: v.boolean(),
   }),
+  userInputs: defineTable({
+    destination: v.string(),
+    tripType: v.string(),
+    budget: v.string(),
+    description: v.string(),
+  }),
 });
