@@ -12,4 +12,13 @@ export default defineSchema({
     budget: v.string(),
     description: v.string(),
   }),
+  locations: defineTable({
+    longitude: v.float64(), 
+    latitude: v.float64(),  
+  }),
+  locations2: defineTable({
+    locationName: v.string(),
+    longitude: v.float64(), 
+    latitude: v.float64(),  
+  }),
 });
